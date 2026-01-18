@@ -1,0 +1,19 @@
+deepseek:
+  api_key : ""
+  website_url: "https://api.deepseek.com"
+
+prompt :
+  system_prompt: 
+               |
+                   Your goal is to generate an alternative to the given query. 
+                   Provide no description of the query. I want a direct reply.
+                   Example should be in json.
+
+                   Example : 
+
+                   Query : "what is gradient boosting"
+                   Response : {"alternative_query": "How does the gradient boosting algorithm work in simple terms?"}
+
+                   Notes : 
+                    - Strictly no emojis
+                    - strictly use "alternative_query" as json key
