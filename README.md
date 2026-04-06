@@ -46,7 +46,7 @@ flowchart TD
 
 1. Install dependencies:
 ```bash
-pip install langchain langchain-community chromadb sentence-transformers pypdf pyprojroot openai yaml
+Install dependencies from requirements.txt
 ```
 
 2. Configure API key in `Config/app_config.yml`
