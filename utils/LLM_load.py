@@ -28,11 +28,3 @@ class llm:
         )
         output = response.choices[0].message.content
         return output
-
-"""
-if __name__ == "__main__":
-        llm1 = llm("hello")
-        output= llm1.llm_call()
-        print(output.choices[0].message.content)
-
-"""
