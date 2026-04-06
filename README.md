@@ -4,10 +4,12 @@ A sophisticated Retrieval-Augmented Generation (RAG) pipeline featuring hybrid r
 
 ## Overview
 
+## Project Flow
+
 ```mermaid
 flowchart TD
     A[PDF Documents] --> B[PyPDFLoader]
-    B --> C[Parent‑Child Splitting]
+    B --> C[Parent-Child Splitting]
 
     subgraph "Indexing"
         C --> D[Parent Chunks]
@@ -17,7 +19,7 @@ flowchart TD
         E --> H[BM25 Index]
     end
 
-    I[User Query] --> J[Query Augmentation<br/>DeepSeek LLM]
+    I[User Query] --> J[Query Augmentation - DeepSeek LLM]
     J --> K[Alternative Query]
 
     I --> L{Ensemble Retriever}
@@ -28,11 +30,10 @@ flowchart TD
     L --> M[Retrieve Child Chunks]
     M --> N[Ranking & Parent Selection]
     D -.-> N
-    N --> O[Top‑k Parent Chunks]
+    N --> O[Top-k Parent Chunks]
     O --> P[Context Assembly]
-    P --> Q[LLM Generation<br/>(planned)]
+    P --> Q[LLM Generation - planned]
 ```
-
 ## Key Features
 
 - **Hybrid Retrieval**: Combines BM25 (lexical) and vector similarity for better recall
