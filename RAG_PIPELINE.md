@@ -2,100 +2,35 @@
 
 This document describes the complete Retrieval-Augmented Generation (RAG) pipeline implemented in this project. The pipeline features hybrid retrieval (lexical + vector), query augmentation, and parent‑child chunking for improved context selection.
 
-## Text‑Based Flowchart
-
-```
-PDF Documents
-     │
-     ▼
-PyPDFLoader
-     │
-     ▼
-Parent‑Child Splitting
-     ├─────────────────┐
-     │                 │
-     ▼                 ▼
-Parent Chunks    Child Chunks
-(3000 tokens)    (300 tokens)
-     │                 │
-     │                 ├──────────────┐
-     │                 ▼              ▼
-     │         HuggingFace      BM25 Index
-     │         Embeddings           │
-     │              │               │
-     │              ▼               │
-     │         ChromaDB◄────────────┘
-     │         (Vector DB)           │
-     │              │               │
-     └──────────────┼───────────────┘
-                    │
-User Query          │   Ensemble Retriever
-     │              │   (BM25 + Vector)
-     ├──────────────┼──────────────┐
-     │              │              │
-     ▼              │              │
-Query Augmentation  │              │
-(DeepSeek LLM)      │              │
-     │              │              │
-     ▼              │              │
-Alternative Query   │              │
-     │              │              │
-     └──────────────┼──────────────┘
-                    │
-                    ▼
-           Retrieve Child Chunks
-                    │
-                    ▼
-           Ranking & Parent Selection
-                    │
-                    ▼
-           Top‑k Parent Chunks
-                    │
-                    ▼
-           Context Assembly
-                    │
-                    ▼
-           LLM Generation (planned)
-                    │
-                    ▼
-           Final Answer
-```
-
-## Mermaid Diagram
+## Project Flow
 
 ```mermaid
 flowchart TD
-    %% Data Ingestion & Indexing Phase
     A[PDF Documents] --> B[PyPDFLoader]
-    B --> C[Parent‑Child Splitting]
+    B --> C[Parent-Child Splitting]
 
-    subgraph "Chunking & Embedding"
-        C --> D[Parent Chunks<br/>chunk_size=3000]
-        C --> E[Child Chunks<br/>chunk_size=300]
-        E --> F[HuggingFace Embeddings<br/>all‑MiniLM‑L6‑v2]
-        F --> G[Vector Database<br/>ChromaDB]
+    subgraph "Indexing"
+        C --> D[Parent Chunks]
+        C --> E[Child Chunks]
+        E --> F[Vector Embeddings]
+        F --> G[ChromaDB]
         E --> H[BM25 Index]
     end
 
-    %% Query‑Time Phase
-    I[User Query] --> J[Query Augmentation<br/>DeepSeek LLM]
+    I[User Query] --> J[Query Augmentation - DeepSeek LLM]
     J --> K[Alternative Query]
 
     I --> L{Ensemble Retriever}
     K --> L
-
-    L --> M[Retrieve Child Chunks<br/>BM25 + Vector]
-
-    M --> N[Ranking & Parent Selection]
-    N --> O[Top‑k Parent Chunks]
-    O --> P[Context Assembly<br/>with source metadata]
-    P --> Q[LLM Generation<br/>(to be implemented)]
-    Q --> R[Final Answer]
-
-    %% Stored Data
     G -.-> L
     H -.-> L
-    D -.-> O
+
+    L --> M[Retrieve Child Chunks]
+    M --> N[Ranking & Parent Selection]
+    D -.-> N
+    N --> O[Top-k Parent Chunks]
+    O --> P[Context Assembly]
+    P --> Q[LLM Generation - planned]
 ```
 
 ## Detailed Pipeline Steps
